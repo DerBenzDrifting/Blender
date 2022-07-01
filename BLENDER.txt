@@ -1,0 +1,354 @@
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/DerBenzDrifting/DerBenz/main/--%20init.lua"))()
+local BlenderSimulatorGUI = library.new("BlenderSimulatorGUI", 5013109572)
+
+game:GetService("StarterGui"):SetCore("SendNotification", {
+    Title = "Blender Simulator GUI";
+    Text = "Welcome "..game.Players.LocalPlayer.Name
+})
+if game:GetService("StarterGui") then  game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("", "All")
+end
+
+local UIS = game:GetService("UserInputService")
+local Player = game.Players.LocalPlayer
+local Mouse = Player:GetMouse()
+local tpservice = game:GetService("TeleportService")
+local Client = game.ReplicatedStorage.Interaction.ClientSetListPlayer
+local players = game.Players
+local s = Instance.new("PointLight", game.Players.LocalPlayer.Character.Head)
+local LariKencang = 16
+local varbs = {}
+varbs.plr = game.Players.LocalPlayer
+varbs.chr = varbs.plr.Character
+varbs.hum = varbs.chr.Humanoid
+varbs.hrp = varbs.chr.HumanoidRootPart
+varbs.camera = game.Workspace.CurrentCamera
+varbs.Head = varbs.chr.Head
+varbs.Ferry = game.Workspace.Ferry
+
+
+local function SendNotification(title,text,duration,...)
+    game.StarterGui:SetCore("SendNotification", {
+      Title = title;
+      Text = text;
+      Icon = "";
+      Duration = duration;
+    })
+  end
+
+game.Players.ChildAdded:Connect(function(player)
+    if not pcall (function()
+    SendNotification("Blender Simulator",""..player.Name.." has JOINED the game",7 )
+    end) then
+      print ("Error")
+    end
+end)
+game.Players.ChildRemoved:Connect(function(player)
+    if not pcall (function()
+    SendNotification("Blender Simulator",""..player.Name.." has LEFT the game",6 )
+    end) then
+      print ("Error")
+    end
+end)
+    
+    SendNotification("Blender Simulator","Join and leave Loaded",5)
+  
+
+--tema
+local themes = {
+Background = Color3.fromRGB(255, 255, 255),
+Glow = Color3.fromRGB(255, 255, 255),
+Accent = Color3.fromRGB(136, 136, 136),
+LightContrast = Color3.fromRGB(255, 255, 255),
+DarkContrast = Color3.fromRGB(255, 255, 255),  
+TextColor = Color3.fromRGB(0, 0, 0)
+}
+
+--page pertama
+local page1 = BlenderSimulatorGUI:addPage("Home", 4595286933)
+local section1 = page1:addSection("Information")
+local section2 = page1:addSection("Credits")
+local section4 = page1:addSection("All Path Of Objects")
+local section3 = page1:addSection("Settings")
+
+
+section1:addButton("Send Message (Says Hi in the chat)", function()
+    game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Hi", "All")
+end)
+
+
+section2:addButton("Blender Simulator GUI Creator", function()
+    setclipboard("https://www.roblox.com/users/2669336447/profile")
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "Blender Simulator GUI";
+        Text = "Link Copied"
+    })
+end)
+section2:addButton("Join Discord", function()
+    setclipboard("https://discord.com/invite/Vf9sTAjvtK")
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "Blender Simulator";
+        Text = "Link Discord Copied"
+    })
+end)
+
+section3:addButton("Destroy Gui", function()
+        game:GetService("CoreGui").BlenderSimulatorGUI:Destroy()
+end)
+section3:addKeybind("Close GUI", Enum.KeyCode.RightShift, function()
+print("Buka Tutup Gui")
+BlenderSimulatorGUI:toggle()
+end, function()
+print("Closed")
+end)
+section3:addButton("Rejoin Game", function()
+    tpservice:Teleport(game.PlaceId, varbs.plr)
+end)
+
+-- page kedua [ tema ]
+local page2 = BlenderSimulatorGUI:addPage("Color", 5028857084)
+local colors = page2:addSection("Colors")
+
+for theme, color in pairs(themes) do
+colors:addColorPicker(theme, color, function(color3)
+BlenderSimulatorGUI:setTheme(theme, color3)
+end)
+end
+
+-- load pertama kali buka script
+BlenderSimulatorGUI:SelectPage(BlenderSimulatorGUI.pages[1], true)
+
+-- page ketiga
+local page4 = BlenderSimulatorGUI:addPage("Player", 5012544693)
+local air = page4:addSection("Superman Mode")
+local superman = page4:addSection("Yang Lain")
+local resetkarakter = page4:addSection("Reset Karakter")
+
+resetkarakter:addButton("Reset Karakter", function()
+    function SafeRespawn()
+        varbs.plr.Character.Head:Destroy()
+    end
+    
+    function Dupe()
+        SafeRespawn()
+        for i,v in pairs(varbs.plr.Backpack:GetChildren()) do
+            if v.Name == "Tool" then
+                game:GetService("ReplicatedStorage").Interaction.ClientInteracted:FireServer(v,"Drop tool",varbs.plr.Character.Torso.CFrame * CFrame.new(0,5,0))
+            end
+        end
+    end
+    
+    Dupe()
+end)
+
+
+air:addSlider("Wall hack speed", 16, 16, 400, function(value)
+    LariKencang = value
+end)
+local ProximityPromptService = game:GetService("ProximityPromptService")
+local lari = game:GetService("RunService").RenderStepped:Connect(function()
+    if game.Players.LocalPlayer then
+        if game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") then
+            if game.Players.LocalPlayer.Character:FindFirstChild("Humanoid").WalkSpeed ~=0 then
+                game.Players.LocalPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = LariKencang
+            end
+        end
+    end
+end)
+air:addSlider("Jump Power", 50, 50, 800, function(value)
+    varbs.hum.JumpPower = value
+end)
+superman:addButton("Infinity Jump", function()
+    loadstring(game:HttpGet("https://pastebin.com/raw/a4A1zMnn"))()
+end)
+superman:addToggle("Walk On Water", nil, function(state)
+    for i, v in pairs(game.Workspace.Water:GetChildren()) do
+        if v.Name == "Water" then v.CanCollide = state end
+    end
+end)
+
+repeat wait() 
+    until game.Players.LocalPlayer and game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Head") and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") 
+    local mouse = game.Players.LocalPlayer:GetMouse() 
+    repeat wait() until mouse
+        local plr = game.Players.LocalPlayer 
+    local torso = plr.Character.Head 
+    local flying = false
+    local deb = true 
+    local ctrl = {f = 0, b = 0, l = 0, r = 0} 
+    local lastctrl = {f = 0, b = 0, l = 0, r = 0} 
+    local maxspeed = 500
+    local speed = 99
+
+    function Fly() 
+    local bg = Instance.new("BodyGyro", torso) 
+    bg.P = 9e4 
+    bg.maxTorque = Vector3.new(9e9, 9e9, 9e9) 
+    bg.cframe = torso.CFrame 
+    local bv = Instance.new("BodyVelocity", torso) 
+    bv.velocity = Vector3.new(0,0.1,0) 
+    bv.maxForce = Vector3.new(9e9, 9e9, 9e9) 
+    repeat wait() 
+    plr.Character.Humanoid.PlatformStand = true 
+    if ctrl.l + ctrl.r ~= 0 or ctrl.f + ctrl.b ~= 0 then 
+    speed = speed+.5+(speed/maxspeed) 
+    if speed > maxspeed then 
+    speed = maxspeed 
+    end 
+    elseif not (ctrl.l + ctrl.r ~= 0 or ctrl.f + ctrl.b ~= 0) and speed ~= 0 then 
+    speed = speed-1 
+    if speed < 0 then 
+    speed = 0 
+    end 
+end 
+if (ctrl.l + ctrl.r) ~= 0 or (ctrl.f + ctrl.b) ~= 0 then 
+bv.velocity = ((game.Workspace.CurrentCamera.CoordinateFrame.lookVector * (ctrl.f+ctrl.b)) + ((game.Workspace.CurrentCamera.CoordinateFrame * CFrame.new(ctrl.l+ctrl.r,(ctrl.f+ctrl.b)*.2,0).p) - game.Workspace.CurrentCamera.CoordinateFrame.p))*speed 
+lastctrl = {f = ctrl.f, b = ctrl.b, l = ctrl.l, r = ctrl.r} 
+elseif (ctrl.l + ctrl.r) == 0 and (ctrl.f + ctrl.b) == 0 and speed ~= 0 then 
+bv.velocity = ((game.Workspace.CurrentCamera.CoordinateFrame.lookVector * (lastctrl.f+lastctrl.b)) + ((game.Workspace.CurrentCamera.CoordinateFrame * CFrame.new(lastctrl.l+lastctrl.r,(lastctrl.f+lastctrl.b)*.2,0).p) - game.Workspace.CurrentCamera.CoordinateFrame.p))*speed 
+else 
+bv.velocity = Vector3.new(0,0.1,0) 
+end 
+bg.cframe = game.Workspace.CurrentCamera.CoordinateFrame * CFrame.Angles(-math.rad((ctrl.f+ctrl.b)*50*speed/maxspeed),0,0) 
+until not flying 
+ctrl = {f = 0, b = 0, l = 0, r = 0} 
+lastctrl = {f = 0, b = 0, l = 0, r = 0} 
+speed = 0 
+bg:Destroy() 
+bv:Destroy() 
+plr.Character.Humanoid.PlatformStand = false 
+end 
+mouse.KeyDown:Connect(function(key) 
+if key:lower() == "l" then 
+if flying then flying = false 
+else 
+flying = true 
+Fly() 
+end 
+elseif key:lower() == "w" then 
+ctrl.f = 1 
+elseif key:lower() == "s" then 
+ctrl.b = -1 
+elseif key:lower() == "a" then 
+ctrl.l = -1 
+elseif key:lower() == "d" then 
+ctrl.r = 1 
+    end 
+end) 
+mouse.KeyUp:Connect(function(key) 
+if key:lower() == "w" then 
+ctrl.f = 0 
+elseif key:lower() == "s" then 
+ctrl.b = 0 
+elseif key:lower() == "a" then 
+ctrl.l = 0 
+elseif key:lower() == "d" then 
+ctrl.r = 0 
+end 
+end)
+Fly()
+
+function GetCharacter()
+        return game.Players.LocalPlayer.Character
+end
+     function Teleport(pos)
+        local Char = GetCharacter()
+        if Char then
+            Char:MoveTo(pos)
+        end
+end
+
+air:addButton("[CTRL + CLICK] > Teleport", function(state)
+        UIS.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 and UIS:IsKeyDown(Enum.KeyCode.LeftControl) then
+                Teleport(Mouse.Hit.p)
+            end
+        end)
+end)
+
+
+superman:addKeybind("Fly", Enum.KeyCode.Q, function()
+    print("Terbang Diaktifkan")
+        if flying then flying = false
+else
+    flying = true
+    Fly()
+end 
+end, function()
+    print("Fly on")
+end)
+
+superman:addSlider("Fly Speed", 50, 50, 800, function(value)
+    speed = value
+end)
+
+superman:addToggle("Light", nil, function(state)
+    if state == true then
+        s.Brightness = .0
+        s.Range = 0
+    end
+    if state == false then
+        s.Brightness = .0
+        s.Range = 0
+    end
+end)
+
+superman:addSlider("Light Intensity", 0, 0, 150, function(value)
+    s.Brightness = value
+end)
+superman:addSlider("Light Range", 0, 0, 100, function(value)
+    s.Range = value
+end)
+
+--Page keDelapan
+local AnotherGUI = BlenderSimulatorGUI:addPage("Scripts", 5012544693)
+local Gui = AnotherGUI:addSection("Scripts")
+local Script = AnotherGUI:addSection("Script")
+
+Gui:addToggle("AutoFarm/Infinite Backpack (Press V to activade only press it when you are in the range of pressing e in front of your blender or execute cmd x under this option)", nil, function(state)
+    if state == true then
+        loadstring(game:HttpGet("https://pastebin.com/raw/yQB338nx"))()
+    end
+end)
+
+Gui:addToggle("CMD-X (when executing this cause you not was in front of the blender then type in the cmd bar clicktp and tp you in front of the blender with the key what it says you))", nil, function(state)
+    if state == true then
+        loadstring(game:HttpGet("https://pastebin.com/raw/yQB338nx"))()
+    end
+end)
+
+-- Page Kesembilan
+local SpecialThanks = BlenderSimulatorGUI:addPage("Special Thanks")
+local Owner = SpecialThanks:addSection("DerBenz - Creator")
+
+
+
+--script dimatikan ?
+local CloseScript = game:GetService("CoreGui").ChildRemoved:Connect(function(child)
+    if child.Name == "BlenderSimulatorGUI" then
+        lari:Disconnect()
+    end
+    if child.Name == "BlenderSimulatorGUI" then
+        varbs.hum.JumpPower = 50
+    end
+    if child.Name == "BlenderSimulatorGUI" then
+        if flying then
+            flying = false
+            else
+                flying = false
+        end
+    end
+    if child.Name == "BlenderSimulatorGUI" then
+        s.Brightness = .0
+        s.Range = 0
+    end
+    if child.Name == "BlenderSimulatorGUI" then
+        game:GetService('Lighting').Brightness = 0
+    end
+    if child.Name == "BlenderSimulatorGUI" then
+        _G.FullBrightExecuted = false
+    end
+    if child.Name == "BlenderSimulatorGUI" then
+        game:GetService("StarterGui"):Disconnect()
+    end
+end)
+
